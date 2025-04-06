@@ -30,6 +30,6 @@
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.ts",
     "scripts/seed.js"
-  ],
+, "app/ui/pages/api/welcome.js"  ],
   "exclude": ["node_modules"]
 }
