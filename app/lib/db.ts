@@ -6,12 +6,17 @@ const pool = new Pool({
 });
 
 // Definimos la función sql para que soporte interpolaciones correctamente
-export async function sql<T extends QueryResultRow>(sql: TemplateStringsArray, ...params: any[]): Promise<QueryResult<T>> {
-  const queryString = sql.join('');  // Convierte el TemplateStringArray en una cadena de texto
+export async function sql<T extends QueryResultRow>(
+  strings: TemplateStringsArray,
+  ...values: any[]
+): Promise<QueryResult<T>> {
+  // Construye la consulta con $1, $2, $3...
+  const text = strings.reduce((acc, str, i) => {
+    return acc + str + (i < values.length ? `$${i + 1}` : '');
+  }, '');
 
   try {
-    // Ejecuta la consulta con los parámetros proporcionados
-    const result = await pool.query<T>(queryString, params);
+    const result = await pool.query<T>(text, values);
     return result;
   } catch (error) {
     console.error('Database query error', error);
